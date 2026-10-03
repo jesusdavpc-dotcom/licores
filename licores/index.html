@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Elixir | Toma para sentirte vivo</title>
+
+  <!-- Bootstrap 5.3.8 (CSS) -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+        crossorigin="anonymous">
+  <!-- Íconos de Bootstrap -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+  <!-- Nuestros estilos -->
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+  <main>
+    <!-- ===== BARRA DE NAVEGACIÓN ===== -->
+    <header class="sticky-top">
+      <nav class="navbar navbar-expand-lg bg-body border-bottom" aria-label="Menú principal">
+        <div class="container">
+          <a class="navbar-brand fw-bold" href="#inicio">
+            <i class="bi bi-cup-straw text-warning"></i>
+            Elixir <span class="fw-light">Licorería</span>
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#menuTienda" aria-controls="menuTienda"
+                  aria-expanded="false" aria-label="Abrir menú">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="menuTienda">
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#inicio">Inicio</a>
+              </li>
+              <li class="nav-item"><a class="nav-link" href="#categorias">Categorías</a></li>
+              <li class="nav-item"><a class="nav-link" href="#productos">Productos</a></li>
+              <li class="nav-item"><a class="nav-link" href="#ventas">Comprar</a></li>
+              <li class="nav-item"><a class="nav-link" href="#preguntas">Preguntas</a></li>
+            </ul>
+            <!-- Botón que abre el Modal de la Factura del Carrito -->
+            <button class="btn btn-outline-dark position-relative" type="button" data-bs-toggle="modal" data-bs-target="#modalCarrito" onclick="renderizarFactura()">
+              <i class="bi bi-cart3"></i> Carrito
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger" id="contadorCarrito">0</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- ===== SECCIÓN PRINCIPAL (HERO) ===== -->
+    <section class="py-5 bg-body-tertiary" id="inicio">
+      <div class="container">
+        <div class="row align-items-center g-4">
+          <div class="col-md-6 text-center text-md-start">
+            <span class="badge text-bg-dark mb-3"><i class="bi bi-star-fill text-warning"></i> Nuevas Cosechas & Reservas 2026</span>
+            <h1 class="display-4 fw-bold">Para que tus noches sean memorables</h1>
+            <p class="lead text-body-secondary my-3">
+              Los mejores rones añejos, licores artesanales y bebidas espirituosas directo a tu puerta.
+            </p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center justify-content-md-start">
+              <a href="#ventas" class="btn btn-dark btn-lg px-4"><i class="bi bi-bag-check"></i> Comprar Licores</a>
+              <a href="#categorias" class="btn btn-outline-dark btn-lg px-4">Ver Categorías</a>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <img src="img/images4.jpeg" class="img-fluid rounded-4 shadow" width="800"
+                 height="600" alt="Botella de Ron Añejo Reserva y coctelera">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECCIÓN DE PEDIDO Y REGISTRO DE VENTA ===== -->
+    <section class="py-5 bg-light border-bottom" id="ventas">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-4 p-4">
+              <h2 class="h3 fw-bold text-center mb-3"><i class="bi bi-receipt"></i> Módulo de Registro de Venta</h2>
+              <p class="text-center text-muted small mb-4">Ingresa tu pedido para aplicar descuentos por volumen y envío gratis a partir de $150.000.</p>
+              
+              <form id="formVenta" onsubmit="realizarVenta(event)">
+                <div class="row g-3">
+                  <!-- Selección de Bebida -->
+                  <div class="col-md-6">
+                    <label for="selectBebida" class="form-label fw-semibold">Bebida a elegir</label>
+                    <select class="form-select" id="selectBebida" onchange="calcularTotalVenta()" required>
+                      <option value="" selected disabled>Selecciona una opción...</option>
+                      <option value="90000" data-nombre="Ron Añejo Imperial 8 Años">Ron Añejo Imperial 8 Años - $90.000</option>
+                      <option value="120000" data-nombre="Ron Extravaganza Reserva X.O.">Ron Extravaganza Reserva X.O. - $120.000</option>
+                      <option value="65000" data-nombre="Liqueur Spiced & Canela">Liqueur Spiced & Canela - $65.000</option>
+                      <option value="45000" data-nombre="Ginebra Botánica Elixir">Ginebra Botánica Elixir - $45.000</option>
+                    </select>
+                  </div>
+
+                  <!-- Cantidad -->
+                  <div class="col-md-6">
+                    <label for="cantidadBebidas" class="form-label fw-semibold">Cantidad de botellas</label>
+                    <input type="number" class="form-control" id="cantidadBebidas" min="1" value="1" oninput="calcularTotalVenta()" required>
+                  </div>
+
+                  <!-- Cupón de Descuento -->
+                  <div class="col-md-12">
+                    <label for="cuponDescuento" class="form-label fw-semibold">Cupón de descuento (Opcional)</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="bi bi-ticket-perforated"></i></span>
+                      <input type="text" class="form-control" id="cuponDescuento" placeholder="Ej: ELIXIR10 o FIESTA15" oninput="calcularTotalVenta()">
+                    </div>
+                  </div>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Resumen previo -->
+                <div class="bg-body-tertiary p-3 rounded-3 mb-3">
+                  <div class="d-flex justify-content-between mb-1">
+                    <span>Subtotal:</span>
+                    <span class="fw-bold" id="subtotalVenta">$0</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-1 text-success">
+                    <span>Descuento aplicado:</span>
+                    <span class="fw-bold" id="descuentoVenta">-$0</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-1">
+                    <span>Costo de Envío:</span>
+                    <span class="fw-bold" id="envioVenta">$0</span>
+                  </div>
+                  <hr>
+                  <div class="d-flex justify-content-between fs-5 fw-bold">
+                    <span>Total a pagar:</span>
+                    <span class="text-primary" id="totalVenta">$0</span>
+                  </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                  <button type="submit" class="btn btn-dark btn-lg"><i class="bi bi-cart-plus-fill"></i> Agregar al Carrito</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PASO 4: BENEFICIOS ===== -->
+    <section class="py-4 border-bottom">
+      <div class="container">
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+          <div class="col d-flex align-items-center gap-3">
+            <i class="bi bi-truck fs-2 text-warning"></i>
+            <div>
+              <p class="fw-semibold mb-0">Envío gratis</p>
+              <p class="small text-body-secondary mb-0">En compras superiores a $150.000</p>
+            </div>
+          </div>
+          <div class="col d-flex align-items-center gap-3">
+            <i class="bi bi-shield-check fs-2 text-warning"></i>
+            <div>
+              <p class="fw-semibold mb-0">Calidad garantizada</p>
+              <p class="small text-body-secondary mb-0">Licores 100% estampillados y originales</p>
+            </div>
+          </div>
+          <div class="col d-flex align-items-center gap-3">
+            <i class="bi bi-credit-card fs-2 text-warning"></i>
+            <div>
+              <p class="fw-semibold mb-0">Pago seguro</p>
+              <p class="small text-body-secondary mb-0">Tarjeta, PSE, Nequi o contraentrega</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PASO 5: CATEGORÍAS ===== -->
+    <section class="py-5" id="categorias">
+      <div class="container">
+        <h2 class="text-center mb-4">Explora por Tipo de Rones o aguardiente</h2>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <a href="#productos" class="card text-bg-dark border-0 text-decoration-none overflow-hidden categoria">
+              <img src="img/images.jpeg" class="card-img" alt="Rones Añejos y Reservas">
+              <div class="card-img-overlay d-flex align-items-end bg-dark bg-opacity-25">
+                <h3 class="h4 mb-0"><i class="bi bi-glass-rhum"></i> Aguardiente</h3>
+              </div>
+            </a>
+          </div>
+          <div class="col-md-4">
+            <a href="#productos" class="card text-bg-dark border-0 text-decoration-none overflow-hidden categoria">
+              <img src="img/images2.jpeg" class="card-img" alt="Licores de Fiesta y Tequila">
+              <div class="card-img-overlay d-flex align-items-end bg-dark bg-opacity-25">
+                <h3 class="h4 mb-0"><i class="bi bi-cup-hot"></i> Buchanans</h3>
+              </div>
+            </a>
+          </div>
+          <div class="col-md-4">
+            <a href="#productos" class="card text-bg-dark border-0 text-decoration-none overflow-hidden categoria">
+              <img src="img/images3.jpeg" class="card-img" alt="Coctelería y Mezclas">
+              <div class="card-img-overlay d-flex align-items-end bg-dark bg-opacity-25">
+                <h3 class="h4 mb-0"><i class="bi bi-tropical-storm"></i> Old Parr</h3>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PASO 6: PRODUCTOS DESTACADOS ===== -->
+    <section class="py-5 bg-body-tertiary" id="productos">
+      <div class="container">
+        <h2 class="text-center mb-4">Licores Destacados</h2>
+        <div class="row row-cols-2 row-cols-lg-3 g-3 g-md-4">
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PASO 12: CARRUSEL DE PROMOCIONES ===== -->
+    <section class="py-5">
+      <div class="container">
+        <div id="carruselPromos" class="carousel slide rounded-4 overflow-hidden shadow" data-bs-ride="carousel">
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carruselPromos" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Promoción 1"></button>
+            <button type="button" data-bs-target="#carruselPromos" data-bs-slide-to="1" aria-label="Promoción 2"></button>
+            <button type="button" data-bs-target="#carruselPromos" data-bs-slide-to="2" aria-label="Promoción 3"></button>
+          </div>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="img/images.jpeg" class="d-block w-100 h-auto" width="1200" height="400" alt="Promoción Temporada de Ron">
+              <div class="carousel-caption bg-dark bg-opacity-50 rounded-3 p-3">
+                <h3 class="fw-bold">Festival del Ron Añejo</h3>
+                <p class="d-none d-md-block">Hasta 20% de descuento usando el cupón <strong>ELIXIR10</strong> o compras por mayor.</p>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <img src="img/images2.jpeg" class="d-block w-100 h-auto" width="1200" height="400" alt="Promoción Envío gratis">
+              <div class="carousel-caption bg-dark bg-opacity-50 rounded-3 p-3">
+                <h3 class="fw-bold">Esta es nuestra presentacion mas recien</h3>
+                <p class="d-none d-md-block">En todas tus compras desde $150.000 para tu fiesta o evento.</p>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <img src="img/images3.jpeg" class="d-block w-100 h-auto" width="1200" height="400" alt="Promoción de Cócteles">
+              <div class="carousel-caption bg-dark bg-opacity-50 rounded-3 p-3">
+                <h3 class="fw-bold">Old parr 12 años</h3>
+                <p class="d-none d-md-block">Llévate vasos y mezcladores gratis por la compra de 3 botellas.</p>
+              </div>
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carruselPromos" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carruselPromos" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PASO 13: PREGUNTAS FRECUENTES ===== -->
+    <section class="py-5 bg-body-tertiary" id="preguntas">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <h2 class="text-center mb-4">Preguntas Frecuentes sobre nuestros Licores</h2>
+            <div class="accordion" id="acordeonPreguntas">
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pregunta1" aria-expanded="true" aria-controls="pregunta1">
+                    ¿Sus bebidas cuentan con estampilla y registro sanitario?
+                  </button>
+                </h3>
+                <div id="pregunta1" class="accordion-collapse collapse show" data-bs-parent="#acordeonPreguntas">
+                  <div class="accordion-body">
+                    Sí, 100% de nuestros rones y licores cuentan con registro legal, estampilla departamental correspondiente e invima. Garantizamos autenticidad total.
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pregunta2" aria-expanded="false" aria-controls="pregunta2">
+                    ¿Cómo funciona el descuento y el envío gratis?
+                  </button>
+                </h3>
+                <div id="pregunta2" class="accordion-collapse collapse" data-bs-parent="#acordeonPreguntas">
+                  <div class="accordion-body">
+                    Si tu compra supera los $150.000, el envío es completamente gratis. Además, puedes ingresar cupones de descuento como <strong>ELIXIR10</strong> o compras mayoristas (+5 botellas) para obtener reducciones adicionales.
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pregunta3" aria-expanded="false" aria-controls="pregunta3">
+                    ¿Venden a menores de edad o cuáles son las restricciones de entrega?
+                  </button>
+                </h3>
+                <div id="pregunta3" class="accordion-collapse collapse" data-bs-parent="#acordeonPreguntas">
+                  <div class="accordion-body">
+                    El expendio de bebidas embriagantes a menores de edad está prohibido. Al momento de la entrega se solicitará documento de identidad oficial.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PASO 14: SUSCRIPCIÓN ===== -->
+    <section class="py-5 bg-dark text-body" data-bs-theme="dark" id="suscripcion">
+      <div class="container">
+        <div class="row justify-content-center text-center">
+          <div class="col-md-8 col-lg-6">
+            <h2>Únete al Club del Elixir</h2>
+            <p class="opacity-75 mb-4">Suscríbete para recibir catas exclusivas, lanzamientos de rones de edición limitada y un 10% en tu primera compra.</p>
+            <form id="formSuscripcion" class="needs-validation text-start" novalidate>
+              <div class="input-group has-validation mb-3">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input type="email" class="form-control" id="correoSuscripcion" placeholder="tu@correo.com" aria-label="Correo electrónico" required>
+                <button class="btn btn-warning" type="submit">Suscribirme</button>
+                <div class="invalid-feedback">Escribe un correo válido.</div>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="aceptoDatos" required>
+                <label class="form-check-label small text-white-50" for="aceptoDatos">
+                  Confirmo que soy mayor de edad y acepto el tratamiento de datos.
+                </label>
+                <div class="invalid-feedback">Debes ser mayor de edad y aceptar los términos.</div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== MODAL / FACTURA DEL CARRITO ===== -->
+  <div class="modal fade" id="modalCarrito" tabindex="-1" aria-labelledby="modalCarritoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0 shadow-lg">
+        <!-- Encabezado Estilo Factura -->
+        <div class="modal-header bg-dark text-white border-0">
+          <div>
+            <h5 class="modal-title fw-bold" id="modalCarritoLabel">
+              <i class="bi bi-receipt-cutoff text-warning"></i> Factura de Compra - Elixir Licorería
+            </h5>
+            <p class="mb-0 small text-white-50">NIT: 900.123.456-7 | Calle Principal Licorera #123</p>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <!-- Detalles de la Factura -->
+          <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
+            <div>
+              <span class="fw-bold d-block">Fecha:</span>
+              <span id="facturaFecha" class="text-muted small">03/10/2026</span>
+            </div>
+            <div class="text-end">
+              <span class="fw-bold d-block">Nº de Compra:</span>
+              <span id="facturaNumero" class="badge bg-secondary">#ELX-001</span>
+            </div>
+          </div>
+
+          <!-- Tabla de Productos -->
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">Producto</th>
+                  <th scope="col" class="text-center">Cant.</th>
+                  <th scope="col" class="text-end">Precio U.</th>
+                  <th scope="col" class="text-end">Subtotal</th>
+                  <th scope="col" class="text-center">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="tablaFacturaBody">
+                <!-- Se llena mediante Javascript -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Resumen de Totales -->
+          <div class="row justify-content-end mt-3">
+            <div class="col-md-6">
+              <div class="bg-light p-3 rounded-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <span>Subtotal acumulado:</span>
+                  <span id="facturaSubtotal" class="fw-bold">$0</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1 text-success">
+                  <span>Descuentos aplicados:</span>
+                  <span id="facturaDescuento" class="fw-bold">-$0</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                  <span>Costo de Envío:</span>
+                  <span id="facturaEnvio" class="fw-bold">$0</span>
+                </div>
+                <hr class="my-2">
+                <div class="d-flex justify-content-between fs-5 fw-bold text-dark">
+                  <span>Total Neto a Pagar:</span>
+                  <span id="facturaTotal" class="text-primary">$0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info mt-3 mb-0 small d-flex align-items-center" role="alert">
+            <i class="bi bi-info-circle-fill fs-5 me-2"></i>
+            <div>
+              Recuerda que si tu pedido supera los $150.000 obtienes <strong>Envío Gratis</strong> a cualquier destino nacional.
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light border-0">
+          <button type="button" class="btn btn-outline-danger me-auto" onclick="vaciarCarrito()">
+            <i class="bi bi-trash"></i> Vaciar Carrito
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Seguir Comprando</button>
+          <button type="button" class="btn btn-success" onclick="pagarFactura()">
+            <i class="bi bi-credit-card-fill"></i> Confirmar y Pagar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PIE DE PÁGINA ===== -->
+  <footer class="py-5 border-top">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-5">
+          <p class="fs-5 fw-bold mb-2"><i class="bi bi-cup-straw text-warning"></i> Elixir Licorería</p>
+          <p class="text-body-secondary small">
+            Selección exclusiva de rones añejos, destilados premium y licores para acompañar tus mejores momentos.
+          </p>
+          <p class="text-muted border p-2 rounded small inline-block">
+            <em>El exceso de alcohol es perjudicial para la salud. Prohibida la venta a menores de edad.</em>
+          </p>
+        </div>
+        
+        <div class="col-6 col-md-3">
+          <p class="fw-semibold">Nuestra Cava</p>
+          <ul class="list-unstyled small">
+            <li><a href="#categorias" class="link-secondary">Categorías de Licores</a></li>
+            <li><a href="#productos" class="link-secondary">Catálogo General</a></li>
+            <li><a href="#ventas" class="link-secondary">Registro de Pedido</a></li>
+            <li><a href="#preguntas" class="link-secondary">Preguntas Frecuentes</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-4">
+          <p class="fw-semibold">Síguenos</p>
+          <div class="d-flex gap-3 fs-4">
+            <a href="#" class="link-dark" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="link-dark" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="link-dark" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <p class="text-center text-body-secondary small mb-0">
+        &copy; 2026 Elixir Licorería - Proyecto académico SENA ADSO
+      </p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5.3.8 (JS) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+          crossorigin="anonymous"></script>
+
+  <!-- Lógica JavaScript para Carrito y Factura -->
+  <script>
+    // Arreglo para almacenar productos añadidos al carrito
+    let carrito = [];
+
+    // Calcular en tiempo real la simulación de la venta
+    function calcularTotalVenta() {
+      const select = document.getElementById('selectBebida');
+      const precioBebida = parseFloat(select.value) || 0;
+      const cantidad = parseInt(document.getElementById('cantidadBebidas').value) || 0;
+      const cupon = document.getElementById('cuponDescuento').value.trim().toUpperCase();
+
+      if (precioBebida === 0 || cantidad <= 0) {
+        document.getElementById('subtotalVenta').innerText = "$0";
+        document.getElementById('descuentoVenta').innerText = "-$0";
+        document.getElementById('envioVenta').innerText = "$0";
+        document.getElementById('totalVenta').innerText = "$0";
+        return { subtotal: 0, descuento: 0, envio: 0, total: 0 };
+      }
+
+      let subtotal = precioBebida * cantidad;
+      let descuento = 0;
+
+      // Descuento por volumen (+5 unidades)
+      if (cantidad >= 5) {
+        descuento += subtotal * 0.10;
+      }
+
+      // Cupones de Descuento
+      if (cupon === "ELIXIR10") {
+        descuento += subtotal * 0.10;
+      } else if (cupon === "FIESTA15") {
+        descuento += subtotal * 0.15;
+      }
+
+      // Envío Gratis si Subtotal >= $150.000
+      let envio = subtotal >= 150000 ? 0 : 12000;
+      let total = subtotal - descuento + envio;
+
+      // Actualizar Vista previa
+      document.getElementById('subtotalVenta').innerText = `$${subtotal.toLocaleString('es-CO')}`;
+      document.getElementById('descuentoVenta').innerText = `-$${descuento.toLocaleString('es-CO')}`;
+      document.getElementById('envioVenta').innerText = envio === 0 ? "¡GRATIS!" : `$${envio.toLocaleString('es-CO')}`;
+      document.getElementById('totalVenta').innerText = `$${total.toLocaleString('es-CO')}`;
+
+      return { subtotal, descuento, envio, total };
+    }
+
+    // Agregar compra al Carrito
+    function realizarVenta(event) {
+      event.preventDefault();
+
+      const select = document.getElementById('selectBebida');
+      const opcionSeleccionada = select.options[select.selectedIndex];
+      
+      if (!select.value) {
+        alert("Por favor selecciona una bebida válida.");
+        return;
+      }
+
+      const nombre = opcionSeleccionada.getAttribute('data-nombre');
+      const precio = parseFloat(select.value);
+      const cantidad = parseInt(document.getElementById('cantidadBebidas').value) || 1;
+      const cupon = document.getElementById('cuponDescuento').value.trim().toUpperCase();
+
+      // Guardar objeto en arreglo de carrito
+      carrito.push({
+        id: Date.now(),
+        nombre: nombre,
+        precio: precio,
+        cantidad: cantidad,
+        cupon: cupon
+      });
+
+      actualizarContadorCarrito();
+      alert(`¡${cantidad} botella(s) de "${nombre}" agregadas al carrito!`);
+      
+      // Reiniciar Formulario
+      document.getElementById('formVenta').reset();
+      calcularTotalVenta();
+    }
+
+    function actualizarContadorCarrito() {
+      const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+      document.getElementById('contadorCarrito').innerText = totalItems;
+    }
+
+    // Dibujar la factura dentro del Modal
+    function renderizarFactura() {
+      const tbody = document.getElementById('tablaFacturaBody');
+      tbody.innerHTML = '';
+
+      if (carrito.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center py-4 text-muted">
+              <i class="bi bi-cart-x fs-2 d-block mb-2"></i>
+              El carrito está vacío. Agrega tus bebidas en la sección de ventas.
+            </td>
+          </tr>
+        `;
+        document.getElementById('facturaSubtotal').innerText = '$0';
+        document.getElementById('facturaDescuento').innerText = '-$0';
+        document.getElementById('facturaEnvio').innerText = '$0';
+        document.getElementById('facturaTotal').innerText = '$0';
+        return;
+      }
+
+      let subtotalGeneral = 0;
+      let descuentoGeneral = 0;
+
+      carrito.forEach((item, index) => {
+        let subtotalItem = item.precio * item.cantidad;
+        let descuentoItem = 0;
+
+        if (item.cantidad >= 5) descuentoItem += subtotalItem * 0.10;
+        if (item.cupon === "ELIXIR10") descuentoItem += subtotalItem * 0.10;
+        if (item.cupon === "FIESTA15") descuentoItem += subtotalItem * 0.15;
+
+        subtotalGeneral += subtotalItem;
+        descuentoGeneral += descuentoItem;
+
+        tbody.innerHTML += `
+          <tr>
+            <td>
+              <span class="fw-semibold">${item.nombre}</span>
+              ${item.cupon ? `<br><small class="badge bg-light text-dark border">Cupón: ${item.cupon}</small>` : ''}
+            </td>
+            <td class="text-center">${item.cantidad}</td>
+            <td class="text-end">$${item.precio.toLocaleString('es-CO')}</td>
+            <td class="text-end fw-bold">$${subtotalItem.toLocaleString('es-CO')}</td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-outline-danger border-0" onclick="eliminarItem(${index})">
+                <i class="bi bi-trash-fill"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      let envioGeneral = subtotalGeneral >= 150000 ? 0 : 12000;
+      let totalNeto = subtotalGeneral - descuentoGeneral + envioGeneral;
+
+      // Insertar datos procesados
+      document.getElementById('facturaFecha').innerText = new Date().toLocaleDateString('es-CO');
+      document.getElementById('facturaSubtotal').innerText = `$${subtotalGeneral.toLocaleString('es-CO')}`;
+      document.getElementById('facturaDescuento').innerText = `-$${descuentoGeneral.toLocaleString('es-CO')}`;
+      document.getElementById('facturaEnvio').innerText = envioGeneral === 0 ? "¡GRATIS!" : `$${envioGeneral.toLocaleString('es-CO')}`;
+      document.getElementById('facturaTotal').innerText = `$${totalNeto.toLocaleString('es-CO')}`;
+    }
+
+    function eliminarItem(index) {
+      carrito.splice(index, 1);
+      actualizarContadorCarrito();
+      renderizarFactura();
+    }
+
+    function vaciarCarrito() {
+      if (carrito.length === 0) return;
+      if (confirm("¿Estás seguro de que deseas vaciar tu carrito?")) {
+        carrito = [];
+        actualizarContadorCarrito();
+        renderizarFactura();
+      }
+    }
+
+    function pagarFactura() {
+      if (carrito.length === 0) {
+        alert("Tu carrito está vacío.");
+        return;
+      }
+      alert("¡Factura procesada con éxito! Gracias por tu compra en Elixir Licorería.");
+      carrito = [];
+      actualizarContadorCarrito();
+      const modal = bootstrap.Modal.getInstance(document.getElementById('modalCarrito'));
+      modal.hide();
+    }
+  </script>
+  <script src="js/tienda.js"></script>
+</body>
+</html>
